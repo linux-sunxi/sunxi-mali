@@ -17,3 +17,7 @@ framebuffer:
 
 x11:
 	$(MAKE) -C lib x11
+
+headers:
+	$(MAKE) -C include
+
