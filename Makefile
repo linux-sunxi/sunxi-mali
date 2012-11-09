@@ -1,10 +1,14 @@
-all: version
+all: version test
 
 clean:
 	$(MAKE) -C version clean
+	$(MAKE) -C test clean
 
 version::
 	$(MAKE) -C version
+
+test::
+	$(MAKE) -C test
 
 install: unknown
 unknown:
