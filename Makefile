@@ -7,9 +7,6 @@ clean:
 version::
 	$(MAKE) -C version
 
-test::
-	$(MAKE) -C test
-
 install: unknown
 unknown:
 	@echo ""
@@ -18,9 +15,11 @@ unknown:
 
 framebuffer:
 	$(MAKE) -C lib framebuffer
+	$(MAKE) -C test framebuffer
 
 x11:
 	$(MAKE) -C lib x11
+	$(MAKE) -C test x11
 
 headers:
 	$(MAKE) -C include

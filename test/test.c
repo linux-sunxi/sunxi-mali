@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Luc Verhaegen <libv@skynet.be>
+ * Copyright (c) 2011-2013 Luc Verhaegen <libv@skynet.be>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,13 +28,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#ifdef USE_X
+#include  <X11/Xatom.h>
+#include  <X11/Xlib.h>
+#include  <X11/Xutil.h>
+#endif
+
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
+#define WIDTH 480
+#define HEIGHT 480
+
+#ifdef USE_X
+Display *XDisplay;
+Window XWindow;
+#else
 struct mali_native_window native_window = {
-	.width = 480,
-	.height = 480,
+	.width = WIDTH,
+	.height = HEIGHT,
 };
+#endif
 
 static const char *vertex_shader_source =
 	"attribute vec4 aPosition;    \n"
@@ -93,43 +108,82 @@ static const EGLint context_attribute_list[] = {
 	EGL_NONE
 };
 
+EGLDisplay egl_display;
+EGLSurface egl_surface;
+
+void
+Redraw(int width, int height)
+{
+	glViewport(0, 0, width, height);
+
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	eglSwapBuffers(egl_display, egl_surface);
+}
+
 int
 main(int argc, char *argv[])
 {
-	EGLDisplay display;
 	EGLint egl_major, egl_minor;
 	EGLConfig config;
 	EGLint num_config;
 	EGLContext context;
-	EGLSurface surface;
 	GLuint vertex_shader;
 	GLuint fragment_shader;
 	GLuint program;
 	GLint ret;
 	GLint width, height;
 
-	display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-	if (display == EGL_NO_DISPLAY) {
+#ifdef USE_X
+	XDisplay = XOpenDisplay(NULL);
+	if (!XDisplay) {
+		fprintf(stderr, "Error: failed to open X display.\n");
+		return -1;
+	}
+
+	Window XRoot = DefaultRootWindow(XDisplay);
+
+	XSetWindowAttributes XWinAttr;
+	XWinAttr.event_mask  =  ExposureMask | PointerMotionMask;
+
+	XWindow = XCreateWindow(XDisplay, XRoot, 0, 0, WIDTH, HEIGHT, 0,
+				CopyFromParent, InputOutput,
+				CopyFromParent, CWEventMask, &XWinAttr);
+
+	Atom XWMDeleteMessage =
+		XInternAtom(XDisplay, "WM_DELETE_WINDOW", False);
+
+	XMapWindow(XDisplay, XWindow);
+	XStoreName(XDisplay, XWindow, "Mali libs test");
+	XSetWMProtocols(XDisplay, XWindow, &XWMDeleteMessage, 1);
+
+	egl_display = eglGetDisplay((EGLNativeDisplayType) XDisplay);
+#else
+	egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+#endif /* USE_X */
+	if (egl_display == EGL_NO_DISPLAY) {
 		fprintf(stderr, "Error: No display found!\n");
 		return -1;
 	}
 
-	if (!eglInitialize(display, &egl_major, &egl_minor)) {
+	if (!eglInitialize(egl_display, &egl_major, &egl_minor)) {
 		fprintf(stderr, "Error: eglInitialise failed!\n");
 		return -1;
 	}
 
 	printf("EGL Version: \"%s\"\n",
-	       eglQueryString(display, EGL_VERSION));
+	       eglQueryString(egl_display, EGL_VERSION));
 	printf("EGL Vendor: \"%s\"\n",
-	       eglQueryString(display, EGL_VENDOR));
+	       eglQueryString(egl_display, EGL_VENDOR));
 	printf("EGL Extensions: \"%s\"\n",
-	       eglQueryString(display, EGL_EXTENSIONS));
+	       eglQueryString(egl_display, EGL_EXTENSIONS));
 
-	eglChooseConfig(display, config_attribute_list, &config, 1,
+	eglChooseConfig(egl_display, config_attribute_list, &config, 1,
 			&num_config);
 
-	context = eglCreateContext(display, config, EGL_NO_CONTEXT,
+	context = eglCreateContext(egl_display, config, EGL_NO_CONTEXT,
 				   context_attribute_list);
 	if (context == EGL_NO_CONTEXT) {
 		fprintf(stderr, "Error: eglCreateContext failed: 0x%08X\n",
@@ -137,27 +191,39 @@ main(int argc, char *argv[])
 		return -1;
 	}
 
-	surface = eglCreateWindowSurface(display, config, &native_window,
-					 window_attribute_list);
-	if (surface == EGL_NO_SURFACE) {
+#ifdef USE_X
+	egl_surface = eglCreateWindowSurface(egl_display, config,
+					     (void *) XWindow,
+					     window_attribute_list);
+#else
+	egl_surface = eglCreateWindowSurface(egl_display, config,
+					     &native_window,
+					     window_attribute_list);
+#endif
+	if (egl_surface == EGL_NO_SURFACE) {
 		fprintf(stderr, "Error: eglCreateWindowSurface failed: "
 			"0x%08X\n", eglGetError());
 		return -1;
 	}
 
-	if (!eglQuerySurface(display, surface, EGL_WIDTH, &width) ||
-	    !eglQuerySurface(display, surface, EGL_HEIGHT, &height)) {
+	if (!eglQuerySurface(egl_display, egl_surface, EGL_WIDTH, &width) ||
+	    !eglQuerySurface(egl_display, egl_surface, EGL_HEIGHT, &height)) {
 		fprintf(stderr, "Error: eglQuerySurface failed: 0x%08X\n",
 			eglGetError());
 		return -1;
 	}
 	printf("Surface size: %dx%d\n", width, height);
 
-	if (!eglMakeCurrent(display, surface, surface, context)) {
+	if (!eglMakeCurrent(egl_display, egl_surface, egl_surface, context)) {
 		fprintf(stderr, "Error: eglMakeCurrent() failed: 0x%08X\n",
 			eglGetError());
 		return -1;
 	}
+
+	printf("GL Vendor: \"%s\"\n", glGetString(GL_VENDOR));
+	printf("GL Renderer: \"%s\"\n", glGetString(GL_RENDERER));
+	printf("GL Version: \"%s\"\n", glGetString(GL_VERSION));
+	printf("GL Extensions: \"%s\"\n", glGetString(GL_EXTENSIONS));
 
 	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
 	if (!vertex_shader) {
@@ -239,10 +305,7 @@ main(int argc, char *argv[])
 	}
 	glUseProgram(program);
 
-	glViewport(0, 0, width, height);
-
 	glClearColor(0.2, 0.2, 0.2, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vVertices);
 	glEnableVertexAttribArray(0);
@@ -250,9 +313,24 @@ main(int argc, char *argv[])
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, vColors);
 	glEnableVertexAttribArray(1);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	Redraw(width, height);
 
-	eglSwapBuffers(display, surface);
+#ifdef USE_X
+	while (1) {
+		XEvent event;
+
+		XNextEvent(XDisplay, &event);
+
+		if ((event.type == MotionNotify) ||
+		    (event.type == Expose))
+			Redraw(width, height);
+		else if (event.type == ClientMessage) {
+			if (event.xclient.data.l[0] == XWMDeleteMessage)
+				break;
+		}
+	}
+	XSetWMProtocols(XDisplay, XWindow, &XWMDeleteMessage, 0);
+#endif
 
 	return 0;
 }
