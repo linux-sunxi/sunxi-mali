@@ -1,22 +1,10 @@
-prefix ?= /usr
-includedir ?= $(prefix)/include
+include ../Makefile.setup
 
-INSTALL ?= install
-INSTALL_DATA ?= $(INSTALL) -m 644
-MKDIR ?= mkdir -p
+all:
+	$(MAKE) -C ump
 
-all: install
-
-UMP_HEADERS = ump/ump_debug.h \
-	ump/ump.h \
-	ump/ump_osu.h \
-	ump/ump_platform.h \
-	ump/ump_ref_drv.h \
-	ump/ump_uk_types.h
-
-install_ump: $(UMP_HEADERS)
-	$(MKDIR) $(includedir)/ump
-	$(INSTALL_DATA) $^ $(includedir)/ump
+install_ump:
+	$(MAKE) -C ump install
 
 install_egl: EGL/egl.h EGL/eglext.h EGL/eglplatform.h
 	$(MKDIR) $(includedir)/EGL
@@ -35,3 +23,6 @@ install_khr: KHR/khrplatform.h
 	$(INSTALL_DATA) $^ $(includedir)/KHR
 
 install: install_ump install_egl install_gles install_gles2 install_khr
+
+clean:
+	$(MAKE) -C ump clean

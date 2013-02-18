@@ -1,5 +1,6 @@
 prefix ?= /usr/
 libdir ?= $(prefix)lib/
+includedir ?= $(prefix)/include
 
 INSTALL ?= install
 INSTALL_DATA ?= $(INSTALL) -m 644

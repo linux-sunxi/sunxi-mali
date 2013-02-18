@@ -28,6 +28,7 @@
  * @{ */
 
 
+#include "ump_version.h"
 #include "ump_platform.h"
 
 
