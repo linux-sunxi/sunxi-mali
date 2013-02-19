@@ -4,47 +4,20 @@ Mali userspace driver installation.
 Installing the binaries:
 ------------------------
 
-There are three types of binaries available: framebuffer, x11 and android.
+First off, while there are some android binaries present, there is currently no
+support for installing the android binaries, you will have to do so manually.
 
-There is no support for installing the android binaries, you will have to do so
-manually.
+When everything goes well, all you need to do is run:
 
-For normal GNU/Linux systems you can use the 'framebuffer' or 'x11' targets, and
-under ideal circumstances, they should do the right thing for you.
+> make install
 
-The makefiles present will try to determine which version of the userspace
-binaries need to be installed. It will use the utility in version/ to query the
-kernel driver for its version. The mali driver version can be overridden with
-the VERSION= argument.
-
-The makefiles present will also try to determine which of the 'armel' of 'armhf'
-toolchains your system uses, so that the correct binaries can be installed. This
-can be overridden with ABI= argument
-
-When all the stars are aligned, the following should install the X11 binaries
-matching your system:
-
-> make x11
-
-When things go wrong, or for some other reason the toolchain abi and the version
-need to be forced, you can run the following to get the r3p0, hardfloat,
-framebuffer binaries installed:
-
-> make VERSION=r3p0 ABI=armhf framebuffer
-
-Installing the EGL/GLES headers:
---------------------------------
-
-These headers can be used to build EGL/GLES applications against.
-
-To install them in /usr/include/, simply run:
-
-> make headers
+This should autodetect things, build libUMP and install headers, libUMP and the
+mali GLES and EGL libraries in your system.
 
 Verifying the EGL/GLES installation:
 ------------------------------------
 
-Run the following to build the hello triangle utility:
+After installation, run the following to build the hello triangle utility:
 
 > make test
 
@@ -54,3 +27,55 @@ When this succeeds, you can attempt to run it:
 
 If this shows a colourful triangle in a grey background measuring 480x480 then
 all is fine!
+
+This test application will also print EGL and GL information to the command
+line.
+
+Do make sure that you are either on the console for the framebuffer binaries to
+work correctly. For X11 binaries, do make sure that X has started.
+
+More control:
+-------------
+
+The build system present tries to detect a few things on its own. It creates
+a config.mk which can be remade by running
+
+> make config
+
+The build systen will try to determine which version of the userspace
+binaries need to be installed. It will use the utility in version/ to query the
+kernel driver for its version. So please make sure to run this on the target
+system with the mali kernel driver loaded. The mali driver version can be
+overridden when configuring with the VERSION= argument. Possible values are
+currently 'r2p4', 'r3p0' and 'r3p1'.
+
+The build system will try to determine which of the 'armel' of 'armhf'
+toolchains your system uses, so that the correct binaries can be installed. This
+can be overridden at configure time with ABI= argument. Possible values are
+'armel' and 'armhf'.
+
+The build system will try to detect whether libX11 is installed, and if so will
+default to installing the x11 binaries. This can be overridden with the
+EGL_TYPE= configure argument. Possible values are 'framebuffer' or 'x11'.
+
+Running:
+
+> make config VERSION=r3p1 ABI=armel EGL_TYPE=framebuffer
+
+will remake config.mk with the new values.
+
+Subsequently running:
+
+> make
+
+will create the ump version header, and build libUMP.so.
+
+By running
+
+> make install
+
+will then install the lot into your system.
+
+To remove all built files, and even the configuration, run:
+
+> make clean
