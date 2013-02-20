@@ -7,6 +7,17 @@ MKDIR ?= mkdir -p
 
 all: install
 
+UMP_HEADERS = ump/ump_debug.h \
+	ump/ump.h \
+	ump/ump_osu.h \
+	ump/ump_platform.h \
+	ump/ump_ref_drv.h \
+	ump/ump_uk_types.h
+
+install_ump: $(UMP_HEADERS)
+	$(MKDIR) $(includedir)/ump
+	$(INSTALL_DATA) $^ $(includedir)/ump
+
 install_egl: EGL/egl.h EGL/eglext.h EGL/eglplatform.h
 	$(MKDIR) $(includedir)/EGL
 	$(INSTALL_DATA) $^ $(includedir)/EGL
@@ -23,4 +34,4 @@ install_khr: KHR/khrplatform.h
 	$(MKDIR) $(includedir)/KHR
 	$(INSTALL_DATA) $^ $(includedir)/KHR
 
-install: install_egl install_gles install_gles2 install_khr
+install: install_ump install_egl install_gles install_gles2 install_khr

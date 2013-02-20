@@ -1,8 +1,7 @@
 all: unknown
 
 clean:
-	$(MAKE) -C version clean
-	$(MAKE) -C test clean
+	$(MAKE) -C ump clean
 
 install: unknown
 unknown:
@@ -11,8 +10,10 @@ unknown:
 	@echo ""
 
 framebuffer:
+	$(MAKE) -C ump framebuffer
 	$(MAKE) -C mali framebuffer
 
 x11:
+	$(MAKE) -C ump x11
 	$(MAKE) -C mali x11
 

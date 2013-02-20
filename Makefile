@@ -3,6 +3,7 @@ all: version test
 clean:
 	$(MAKE) -C version clean
 	$(MAKE) -C test clean
+	$(MAKE) -C lib clean
 
 version::
 	$(MAKE) -C version
