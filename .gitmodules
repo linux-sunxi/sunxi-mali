@@ -1,3 +1,3 @@
-[submodule "lib"]
-	path = lib
+[submodule "lib/mali"]
+	path = lib/mali
 	url = https://github.com/linux-sunxi/sunxi-mali-proprietary.git
