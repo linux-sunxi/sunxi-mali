@@ -1,0 +1,56 @@
+Mali userspace driver installation.
+-----------------------------------
+
+Installing the binaries:
+------------------------
+
+There are three types of binaries available: framebuffer, x11 and android.
+
+There is no support for installing the android binaries, you will have to do so
+manually.
+
+For normal GNU/Linux systems you can use the 'framebuffer' or 'x11' targets, and
+under ideal circumstances, they should do the right thing for you.
+
+The makefiles present will try to determine which version of the userspace
+binaries need to be installed. It will use the utility in version/ to query the
+kernel driver for its version. The mali driver version can be overridden with
+the VERSION= argument.
+
+The makefiles present will also try to determine which of the 'armel' of 'armhf'
+toolchains your system uses, so that the correct binaries can be installed. This
+can be overridden with ABI= argument
+
+When all the stars are aligned, the following should install the X11 binaries
+matching your system:
+
+> make x11
+
+When things go wrong, or for some other reason the toolchain abi and the version
+need to be forced, you can run the following to get the r3p0, hardfloat,
+framebuffer binaries installed:
+
+> make VERSION=r3p0 ABI=armhf framebuffer
+
+Installing the EGL/GLES headers:
+--------------------------------
+
+These headers can be used to build EGL/GLES applications against.
+
+To install them in /usr/include/, simply run:
+
+> make headers
+
+Verifying the EGL/GLES installation:
+------------------------------------
+
+Run the following to build the hello triangle utility:
+
+> make test
+
+When this succeeds, you can attempt to run it:
+
+> test/test
+
+If this shows a colourful triangle in a grey background measuring 480x480 then
+all is fine!
