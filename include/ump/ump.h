@@ -189,7 +189,7 @@ UMP_API_EXPORT void ump_write(ump_handle dst, unsigned long offset, const void *
  * This function retrieves a memory mapped pointer to the specified UMP memory,
  * that can be used by the CPU. Every successful call to
  * @ref ump_mapped_pointer_get "ump_mapped_pointer_get" is reference counted,
- * and must therefor be followed by a call to
+ * and must therefore be followed by a call to
  * @ref ump_mapped_pointer_release "ump_mapped_pointer_release " when the
  * memory mapping is no longer needed.
  *

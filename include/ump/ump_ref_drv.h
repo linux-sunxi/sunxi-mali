@@ -48,8 +48,19 @@ typedef enum
 {
 	UMP_MSYNC_CLEAN = 0 ,
 	UMP_MSYNC_CLEAN_AND_INVALIDATE = 1,
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+	UMP_MSYNC_INVALIDATE = 2,
+#endif
 	UMP_MSYNC_READOUT_CACHE_ENABLED = 128,
 } ump_cpu_msync_op;
+
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+typedef enum
+{
+	UMP_READ = 1,
+	UMP_READ_WRITE = 3,
+} ump_lock_usage;
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
 
 /** Flushing cache for an ump_handle.
  * The function will always CLEAN_AND_INVALIDATE as long as the \a op is not UMP_MSYNC_READOUT_CACHE_ENABLED.
@@ -58,6 +69,42 @@ typedef enum
  * Return value is 1 if cache is enabled, and 0 if it is disabled for the given allocation.*/
 UMP_API_EXPORT int ump_cpu_msync_now(ump_handle mem, ump_cpu_msync_op op, void* address, int size);
 
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+typedef enum
+{
+	UMP_USED_BY_CPU = 0,
+	UMP_USED_BY_MALI = 1,
+	UMP_USED_BY_UNKNOWN_DEVICE = 100,
+} ump_hw_usage;
+
+typedef enum
+{
+	UMP_CACHE_OP_START = 0,
+	UMP_CACHE_OP_FINISH  = 1,
+} ump_cache_op_control;
+
+/** Cache operation control. Tell when cache maintenance operations start and end.
+This will allow the kernel to merge cache operations togheter, thus making them faster */
+UMP_API_EXPORT int ump_cache_operations_control(ump_cache_op_control op);
+
+/** Memory synchronization - cache flushing if previous user was different hardware */
+UMP_API_EXPORT int ump_switch_hw_usage( ump_handle mem, ump_hw_usage new_user );
+
+/** Memory synchronization - cache flushing if previous user was different hardware */
+UMP_API_EXPORT int ump_switch_hw_usage_secure_id( ump_secure_id ump_id, ump_hw_usage new_user );
+
+/** Locking buffer. Blocking call if the buffer is already locked. */
+UMP_API_EXPORT int ump_lock( ump_handle mem, ump_lock_usage lock_usage );
+
+/** Locking buffer. Blocking call if the buffer is already locked. */
+UMP_API_EXPORT int ump_lock_secure_id( ump_secure_id ump_id, ump_lock_usage lock_usage );
+
+/** Unlocking buffer. Let other users lock the buffer for their usage */
+UMP_API_EXPORT int ump_unlock( ump_handle mem );
+
+/** Unlocking buffer. Let other users lock the buffer for their usage */
+UMP_API_EXPORT int ump_unlock_secure_id( ump_secure_id ump_id );
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
 
 #ifdef __cplusplus
 }
