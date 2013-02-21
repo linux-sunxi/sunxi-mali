@@ -19,6 +19,7 @@
  * File implements the user side of the user-kernel interface
  */
 
+#include "ump.h"
 #include "ump_uku.h"
 #include <stdio.h>
 #include "ump_ioctl.h"
@@ -132,6 +133,30 @@ void _ump_uku_msynch(_ump_uk_msync_s *args)
 	}
 	ump_driver_ioctl(args->ctx, UMP_IOC_MSYNC, args);
 }
+
+#warning memory provider version is UNIFIED_MEMORY_PROVIDER_VERSION
+
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+void _ump_uku_cache_operations_control( _ump_uk_cache_operations_control_s *args )
+{
+	ump_driver_ioctl(args->ctx, UMP_IOC_CACHE_OPERATIONS_CONTROL, args);
+}
+
+void _ump_uku_switch_hw_usage( _ump_uk_switch_hw_usage_s *args )
+{
+	ump_driver_ioctl(args->ctx, UMP_IOC_SWITCH_HW_USAGE, args);
+}
+
+void _ump_uku_lock( _ump_uk_lock_s *args )
+{
+	ump_driver_ioctl(args->ctx, UMP_IOC_LOCK, args);
+}
+
+void _ump_uku_unlock( _ump_uk_unlock_s *args )
+{
+	ump_driver_ioctl(args->ctx, UMP_IOC_UNLOCK, args);
+}
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
 
 int _ump_uku_map_mem(_ump_uk_map_mem_s *args)
 {

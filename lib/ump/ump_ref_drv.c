@@ -45,6 +45,7 @@ ump_handle ump_ref_drv_allocate(unsigned long size, ump_alloc_constraints constr
 
 UMP_API_EXPORT int ump_cpu_msync_now(ump_handle memh, ump_cpu_msync_op op, void* address, int size)
 {
+	int offset;
 	ump_mem * mem = (ump_mem*)memh;
 	UMP_DEBUG_ASSERT(UMP_INVALID_MEMORY_HANDLE != memh, ("Handle is invalid"));
 
@@ -52,15 +53,74 @@ UMP_API_EXPORT int ump_cpu_msync_now(ump_handle memh, ump_cpu_msync_op op, void*
 	   Else we skip flushing if the userspace handle says that it is uncached */
 	if ((UMP_MSYNC_READOUT_CACHE_ENABLED!=op) && (0 == mem->is_cached) ) return 0;
 
+	if ( NULL == address )
+	{
+		address = ((ump_mem*)mem)->mapped_mem;
+	}
+	offset = (int) ((unsigned long)address - (unsigned long)((ump_mem*)mem)->mapped_mem);
+
+	if ( 0 == size )
+	{
+		size = (int)((ump_mem*)mem)->size;
+	}
+
 	UMP_DEBUG_ASSERT(0 < (((ump_mem*)mem)->ref_count), ("Reference count too low"));
 	UMP_DEBUG_ASSERT((size>=0) && (size <= (int)((ump_mem*)mem)->size), ("Memory size of passed handle too low"));
 	UMP_DEBUG_ASSERT(NULL != ((ump_mem*)mem)->mapped_mem, ("Error in mapping pointer (not mapped)"));
 
-	if (size > (int)mem->size) size = mem->size;
+	if ( (offset+size) > (int)mem->size)
+	{
+		size = mem->size - offset;
+	}
 
 	mem->is_cached = ump_arch_msync(mem->secure_id, mem->mapped_mem, mem->cookie, address, size, op);
 	return mem->is_cached ;
 }
+
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+UMP_API_EXPORT int ump_cache_operations_control(ump_cache_op_control op)
+{
+	return ump_arch_cache_operations_control(op);
+}
+
+UMP_API_EXPORT int ump_switch_hw_usage( ump_handle memh, ump_hw_usage new_user )
+{
+	ump_mem * mem = (ump_mem*)memh;
+	UMP_DEBUG_ASSERT(UMP_INVALID_MEMORY_HANDLE != memh, ("Handle is invalid"));
+	return ump_arch_switch_hw_usage(mem->secure_id, new_user);
+}
+
+UMP_API_EXPORT int ump_lock( ump_handle memh, ump_lock_usage lock_usage)
+{
+	ump_mem * mem = (ump_mem*)memh;
+	UMP_DEBUG_ASSERT(UMP_INVALID_MEMORY_HANDLE != memh, ("Handle is invalid"));
+	return ump_arch_lock(mem->secure_id, lock_usage);
+}
+
+UMP_API_EXPORT int ump_unlock( ump_handle memh )
+{
+	ump_mem * mem = (ump_mem*)memh;
+	UMP_DEBUG_ASSERT(UMP_INVALID_MEMORY_HANDLE != memh, ("Handle is invalid"));
+	return ump_arch_unlock(mem->secure_id);
+}
+
+UMP_API_EXPORT int ump_switch_hw_usage_secure_id( ump_secure_id ump_id, ump_hw_usage new_user )
+{
+	return ump_arch_switch_hw_usage(ump_id, new_user);
+}
+
+/** Locking buffer. Blocking call if the buffer is already locked. */
+UMP_API_EXPORT int ump_lock_secure_id( ump_secure_id ump_id, ump_lock_usage lock_usage )
+{
+	return ump_arch_lock(ump_id, lock_usage);
+}
+
+/** Unlocking buffer. Let other users lock the buffer for their usage */
+UMP_API_EXPORT int ump_unlock_secure_id( ump_secure_id ump_id )
+{
+	return ump_arch_unlock(ump_id);
+}
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
 
 /* Allocate a buffer which can be used directly by hardware, 4kb aligned */
 static ump_handle ump_ref_drv_allocate_internal(unsigned long size, ump_alloc_constraints constraints, ump_cache_enabled cache)

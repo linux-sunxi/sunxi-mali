@@ -58,6 +58,21 @@ void ump_arch_unmap(void* mapping, unsigned long size, unsigned long cookie);
  * @return Is_cached: 1==True 0==NonCached */
 int ump_arch_msync(ump_secure_id secure_id, void* mapping, unsigned long cookie, void * address, unsigned long size,  ump_cpu_msync_op op);
 
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+/** Cache operation control. Tell when cache maintenance operations start and end.
+This will allow the kernel to merge cache operations togheter, thus making them faster */
+int ump_arch_cache_operations_control(ump_cache_op_control op);
+
+/** Memory synchronization - cache flushing if previous user was different hardware */
+int ump_arch_switch_hw_usage( ump_secure_id secure_id, ump_hw_usage new_user );
+
+/** Locking buffer. Blocking call if the buffer is already locked. */
+int ump_arch_lock( ump_secure_id secure_id, ump_lock_usage lock_usage );
+
+/** Unlocking buffer. Let other users lock the buffer for their usage */
+int ump_arch_unlock( ump_secure_id secure_id );
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
+
 #ifdef __cplusplus
 }
 #endif

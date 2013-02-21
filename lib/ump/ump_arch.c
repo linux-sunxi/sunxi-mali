@@ -258,3 +258,57 @@ int ump_arch_msync(ump_secure_id secure_id, void* mapping, unsigned long cookie,
 	}
 	return dd_msync_call_arg.is_cached;
 }
+
+#if UNIFIED_MEMORY_PROVIDER_VERSION > 2
+/** Cache operation control. Tell when cache maintenance operations start and end.
+This will allow the kernel to merge cache operations togheter, thus making them faster */
+int ump_arch_cache_operations_control(ump_cache_op_control op)
+{
+	_ump_uk_cache_operations_control_s dd_cache_control_arg;
+
+	dd_cache_control_arg.op = (ump_uk_cache_op_control)op;
+	dd_cache_control_arg.ctx = ump_uk_ctx;
+
+	UMP_DEBUG_PRINT(4, ("Cache control op:%d",(u32)op ));
+	_ump_uku_cache_operations_control( &dd_cache_control_arg );
+	return 1; /* Always success */
+}
+
+int ump_arch_switch_hw_usage( ump_secure_id secure_id, ump_hw_usage new_user )
+{
+	_ump_uk_switch_hw_usage_s dd_sitch_user_arg;
+
+	dd_sitch_user_arg.secure_id = secure_id;
+	dd_sitch_user_arg.new_user = (ump_uk_user)new_user;
+	dd_sitch_user_arg.ctx = ump_uk_ctx;
+
+	UMP_DEBUG_PRINT(4, ("Switch user UMP:%d User:%d",secure_id, (u32)new_user ));
+	_ump_uku_switch_hw_usage( &dd_sitch_user_arg );
+	return 1; /* Always success */
+}
+
+int ump_arch_lock( ump_secure_id secure_id, ump_lock_usage lock_usage )
+{
+	_ump_uk_lock_s dd_lock_arg;
+
+	dd_lock_arg.ctx = ump_uk_ctx;
+	dd_lock_arg.secure_id = secure_id;
+	dd_lock_arg.lock_usage = (ump_uk_lock_usage) lock_usage;
+
+	UMP_DEBUG_PRINT(4, ("Lock UMP:%d ",secure_id));
+	_ump_uku_lock( &dd_lock_arg );
+	return 1; /* Always success */
+}
+
+int ump_arch_unlock( ump_secure_id secure_id )
+{
+	_ump_uk_unlock_s dd_unlock_arg;
+
+	dd_unlock_arg.ctx = ump_uk_ctx;
+	dd_unlock_arg.secure_id = secure_id;
+
+	UMP_DEBUG_PRINT(4, ("Lock UMP:%d ",secure_id));
+	_ump_uku_unlock( &dd_unlock_arg );
+	return 1; /* Always success */
+}
+#endif /* UNIFIED_MEMORY_PROVIDER_VERSION */
