@@ -11,7 +11,8 @@ else ifeq ($(MALI_VERSION),r3p0)
 else ifeq ($(MALI_VERSION),r3p1)
   UMP_VERSION = 3
 else
-  UMP_VERSION = "0 /* UNKNOWN! */
+  # should've been caught when setting up config.mk.
+  $(error Unknown/unhandled Mali Version "$(MALI_VERSION)")
 endif
 
 UMP_HEADERS = ump_debug.h \

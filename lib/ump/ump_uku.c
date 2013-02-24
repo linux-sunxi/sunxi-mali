@@ -134,8 +134,6 @@ void _ump_uku_msynch(_ump_uk_msync_s *args)
 	ump_driver_ioctl(args->ctx, UMP_IOC_MSYNC, args);
 }
 
-#warning memory provider version is UNIFIED_MEMORY_PROVIDER_VERSION
-
 #if UNIFIED_MEMORY_PROVIDER_VERSION > 2
 void _ump_uku_cache_operations_control( _ump_uk_cache_operations_control_s *args )
 {
