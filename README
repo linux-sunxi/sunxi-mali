@@ -1,6 +1,19 @@
 Mali userspace driver installation.
 -----------------------------------
 
+This repository contains a complete set of Mali userspace drivers, including
+proprietary OpenGLESv2/EGL binaries.
+
+Cloning this repository:
+------------------------
+
+> git clone https://github.com/linux-sunxi/sunxi-mali.git
+> git submodule init
+> git submodule update
+
+This should make sure that you fully set up this repository and the
+sunxi-mali-proprietary submodule.
+
 Installing the binaries:
 ------------------------
 
