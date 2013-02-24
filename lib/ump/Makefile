@@ -2,7 +2,7 @@ include ../../Makefile.setup
 include ../../config.mk
 
 CFLAGS += -I../../include -I../../include/ump
-CFLAGS += -march=armv7 -mthumb-interwork -fno-strict-aliasing -Wno-strict-aliasing -Wno-long-long
+CFLAGS += -mthumb-interwork -fno-strict-aliasing -Wno-strict-aliasing -Wno-long-long
 CFLAGS += -Wall -O3 -fPIC
 
 LDFLAGS += -Wl,--no-as-needed
