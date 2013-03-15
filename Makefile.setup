@@ -1,6 +1,7 @@
+DESTDIR ?= /
 prefix ?= /usr/
-libdir ?= $(prefix)lib/
-includedir ?= $(prefix)/include
+libdir ?= $(DESTDIR)$(prefix)lib/
+includedir ?= $(DESTDIR)$(prefix)/include
 
 INSTALL ?= install
 INSTALL_DATA ?= $(INSTALL) -m 644
