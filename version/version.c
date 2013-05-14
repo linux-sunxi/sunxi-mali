@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 Luc Verhaegen <libv@skynet.be>
+ * Copyright (c) 2011-2013 Luc Verhaegen <libv@skynet.be>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -36,7 +36,8 @@ struct mali_api_version {
 	int compatible;
 };
 
-#define MALI_GET_API_VERSION _IOWR(0x82, 5, struct mali_get_api_version *)
+#define MALI_GET_API_VERSION	  _IOWR(0x82, 5, struct mali_get_api_version *)
+#define MALI_GET_API_VERSION_R3P1 _IOWR(0x82, 3, struct mali_get_api_version *)
 
 static struct {
 	int version;
@@ -49,6 +50,7 @@ static struct {
 	{10, "r2p4"},
 	{14, "r3p0"},
 	{17, "r3p1"},
+	{19, "r3p2"},
 
 	{0, NULL},
 };
@@ -68,6 +70,9 @@ main(int argc, char *argv[])
 	}
 
 	ret = ioctl(fd, MALI_GET_API_VERSION, &api_version);
+	if (ret == -EPERM)
+		ret = ioctl(fd, MALI_GET_API_VERSION_R3P1, &api_version);
+
 	if (ret) {
 		fprintf(stderr, "Error: ioctl(GET_API_VERSION) failed: %s\n",
 			strerror(ret));
