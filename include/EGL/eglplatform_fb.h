@@ -85,13 +85,14 @@ typedef void *EGLNativePixmapType;
 
 #elif defined(__unix__)
 
-/* X11 (tentative)  */
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+struct mali_native_window {
+	unsigned short width;
+	unsigned short height;
+};
 
-typedef Display *EGLNativeDisplayType;
-typedef Pixmap   EGLNativePixmapType;
-typedef Window   EGLNativeWindowType;
+typedef void*         EGLNativeDisplayType;
+typedef void*         EGLNativePixmapType;
+typedef struct mali_native_window *EGLNativeWindowType;
 
 #else
 #error "Platform not recognized"

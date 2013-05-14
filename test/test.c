@@ -29,19 +29,13 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#ifdef USE_X
-#include  <X11/Xatom.h>
-#include  <X11/Xlib.h>
-#include  <X11/Xutil.h>
-#endif
-
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 
 #define WIDTH 480
 #define HEIGHT 480
 
-#ifdef USE_X
+#ifdef _X11_XLIB_H_
 Display *XDisplay;
 Window XWindow;
 #else
@@ -136,7 +130,7 @@ main(int argc, char *argv[])
 	GLint ret;
 	GLint width, height;
 
-#ifdef USE_X
+#ifdef _X11_XLIB_H_
 	XDisplay = XOpenDisplay(NULL);
 	if (!XDisplay) {
 		fprintf(stderr, "Error: failed to open X display.\n");
@@ -162,7 +156,7 @@ main(int argc, char *argv[])
 	egl_display = eglGetDisplay((EGLNativeDisplayType) XDisplay);
 #else
 	egl_display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-#endif /* USE_X */
+#endif /* _X11_XLIB_H_ */
 	if (egl_display == EGL_NO_DISPLAY) {
 		fprintf(stderr, "Error: No display found!\n");
 		return -1;
@@ -191,9 +185,8 @@ main(int argc, char *argv[])
 		return -1;
 	}
 
-#ifdef USE_X
-	egl_surface = eglCreateWindowSurface(egl_display, config,
-					     (void *) XWindow,
+#ifdef _X11_XLIB_H_
+	egl_surface = eglCreateWindowSurface(egl_display, config, XWindow,
 					     window_attribute_list);
 #else
 	egl_surface = eglCreateWindowSurface(egl_display, config,
@@ -315,7 +308,7 @@ main(int argc, char *argv[])
 
 	Redraw(width, height);
 
-#ifdef USE_X
+#ifdef _X11_XLIB_H_
 	while (1) {
 		XEvent event;
 
