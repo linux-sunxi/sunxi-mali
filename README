@@ -60,7 +60,7 @@ binaries need to be installed. It will use the utility in version/ to query the
 kernel driver for its version. So please make sure to run this on the target
 system with the mali kernel driver loaded. The mali driver version can be
 overridden when configuring with the VERSION= argument. Possible values are
-currently 'r2p4', 'r3p0', 'r3p1' and 'r3p2'.
+currently 'r2p4', 'r3p0', 'r3p1', and 'r3p2-01rel1' (which also supports rel2).
 
 The build system will try to determine which of the 'armel' of 'armhf'
 toolchains your system uses, so that the correct binaries can be installed. This

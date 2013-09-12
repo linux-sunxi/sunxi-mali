@@ -51,6 +51,8 @@ static struct {
 	{14, "r3p0"},
 	{17, "r3p1"},
 	{19, "r3p2"},
+	{20, "r3p2-01rel1"}, /* and r3p2-01rel2 */
+	{23, "r3p2-01rel3"},
 
 	{0, NULL},
 };
