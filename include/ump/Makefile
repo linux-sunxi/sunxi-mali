@@ -10,6 +10,8 @@ else ifeq ($(MALI_VERSION),r3p0)
   UMP_VERSION = 3
 else ifeq ($(MALI_VERSION),r3p1)
   UMP_VERSION = 3
+else ifeq ($(MALI_VERSION),r3p2)
+  UMP_VERSION = 3
 else
   # should've been caught when setting up config.mk.
   $(error Unknown/unhandled Mali Version "$(MALI_VERSION)")

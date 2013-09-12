@@ -17,6 +17,8 @@ else ifeq ($(MALI_VERSION),r3p0)
   TARGET = $(BARE_TARGET).3
 else ifeq ($(MALI_VERSION),r3p1)
   TARGET = $(BARE_TARGET).3
+else ifeq ($(MALI_VERSION),r3p2)
+  TARGET = $(BARE_TARGET).3
 endif
 
 OBJECTS = ump_frontend.o \
