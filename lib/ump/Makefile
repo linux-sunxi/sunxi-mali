@@ -3,9 +3,10 @@ include ../../config.mk
 
 CFLAGS += -I../../include -I../../include/ump
 CFLAGS += -mthumb-interwork -fno-strict-aliasing -Wno-strict-aliasing -Wno-long-long
+CFLAGS += -pthread
 CFLAGS += -Wall -O3 -fPIC
 
-LDFLAGS += -Wl,--no-as-needed
+LDFLAGS += -Wl,--no-as-needed -pthread -lpthread
 ifeq ($(MALI_EGL_TYPE),x11)
 	LDFLAGS += -ldri2 -ldrm -lXfixes
 endif
