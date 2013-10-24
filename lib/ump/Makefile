@@ -7,7 +7,10 @@ CFLAGS += -Wall -O3 -fPIC
 
 LDFLAGS += -Wl,--no-as-needed
 ifeq ($(MALI_EGL_TYPE),x11)
-	LDFLAGS += -ldri2 -ldrm -lXfixes
+	LDFLAGS += -ldrm -lXfixes
+	ifeq (x$(shell pkg-config --atleast-version=1.13.0 xorg-server || echo yes ), xyes)
+		LDFLAGS += -ldri2
+	endif
 endif
 
 BARE_TARGET = libUMP.so
