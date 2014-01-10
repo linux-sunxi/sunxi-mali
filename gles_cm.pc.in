@@ -1,0 +1,11 @@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: gles_cm
+Description: Mali OpenGL ES 1.1 CM library
+Requires.private:
+Version: MVERSION
+Libs: -L${libdir} -lGLES_CM
+Libs.private: -lm -lpthread -ldl
+Cflags: -I${includedir}
