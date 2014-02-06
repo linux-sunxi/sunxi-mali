@@ -5,9 +5,9 @@ all:
 	echo "prefix=$(prefix)" > egl.pc
 	cat egl.pc.in >> egl.pc
 	echo "prefix=$(prefix)" > gles_cm.pc
-	cat egl.pc.in >> gles_cm.pc
+	cat gles_cm.pc.in >> gles_cm.pc
 	echo "prefix=$(prefix)" > glesv2.pc
-	cat egl.pc.in >> glesv2.pc
+	cat glesv2.pc.in >> glesv2.pc
 
 install: egl.pc gles_cm.pc glesv2.pc
 	$(MKDIR) $(libdir)/pkgconfig
