@@ -8,10 +8,8 @@ else
 endif
 
 all:
-	$(MAKE) -C ump
 
-install_ump:
-	$(MAKE) -C ump install
+clean:
 
 install_eglplatform: $(EGLPLATFORM_H)
 	$(MKDIR) $(includedir)/EGL
@@ -35,7 +33,4 @@ install_khr: KHR/khrplatform.h
 	$(MKDIR) $(includedir)/KHR
 	$(INSTALL_DATA) $^ $(includedir)/KHR
 
-install: install_ump install_egl install_gles install_gles2 install_khr
-
-clean:
-	$(MAKE) -C ump clean
+install: install_egl install_gles install_gles2 install_khr
