@@ -4,6 +4,17 @@ Mali userspace driver installation.
 This repository contains a complete set of Mali userspace drivers, including
 proprietary OpenGLESv2/EGL binaries.
 
+Prerequisite:
+-------------
+
+You will need to have a matching version of libUMP installed.
+
+You can get this from the linux sunxi package server, which is
+documented at http://linux-sunxi.org/Packages
+
+Or you can manually build libump from the sunxi libump git repository at
+https://github.com/linux-sunxi/libump
+
 Cloning this repository:
 ------------------------
 
@@ -24,8 +35,8 @@ When everything goes well, all you need to do is run:
 
 > make install
 
-This should autodetect things, build libUMP and install headers, libUMP and the
-mali GLES and EGL libraries in your system.
+This should autodetect things, and install the correct mali GLES and EGL
+libraries in your system.
 
 Verifying the EGL/GLES installation:
 ------------------------------------
@@ -50,8 +61,8 @@ work correctly. For X11 binaries, do make sure that X has started.
 More control:
 -------------
 
-The build system present tries to detect a few things on its own. It creates
-a config.mk which can be remade by running
+The build system tries to detect a few things on its own. It creates a
+config.mk which can be remade by running
 
 > make config
 
@@ -75,15 +86,9 @@ Running:
 
 > make config VERSION=r3p1 ABI=armel EGL_TYPE=framebuffer
 
-will remake config.mk with the new values.
+will remake config.mk with the respective values.
 
 Subsequently running:
-
-> make
-
-will create the ump version header, and build libUMP.so.
-
-By running
 
 > make install
 
