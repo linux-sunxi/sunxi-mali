@@ -6,9 +6,6 @@ CFLAGS += -mthumb-interwork -fno-strict-aliasing -Wno-strict-aliasing -Wno-long-
 CFLAGS += -Wall -O3 -fPIC
 
 LDFLAGS += -Wl,--no-as-needed
-ifeq ($(MALI_EGL_TYPE),x11)
-	LDFLAGS += -ldri2 -ldrm -lXfixes
-endif
 
 BARE_TARGET = libUMP.so
 ifeq ($(MALI_VERSION),r2p4)
