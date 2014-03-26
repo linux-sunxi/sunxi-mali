@@ -29,6 +29,7 @@ typedef float  GLfloat;
 typedef float  GLclampf;
 typedef signed int  GLfixed;
 typedef signed int  GLclampx;
+typedef char GLchar;
 
 typedef int * GLintptr;
 typedef int *  GLsizeiptr;
