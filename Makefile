@@ -21,6 +21,7 @@ clean:
 install: config.mk
 	$(MAKE) -C lib install
 	$(MAKE) -C include install
+	$(MAKE) -f Makefile.pc install
 
 test: config.mk
 	$(MAKE) -C test test

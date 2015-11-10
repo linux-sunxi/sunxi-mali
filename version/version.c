@@ -53,6 +53,7 @@ static struct {
 	{19, "r3p2"},
 	{20, "r3p2-01rel1"}, /* and r3p2-01rel2 */
 	{23, "r3p2-01rel3"},
+	{401, "r4p0-00rel0"},
 
 	{0, NULL},
 };
@@ -82,6 +83,7 @@ main(int argc, char *argv[])
 	}
 
 	version = api_version.version & 0xFFFF;
+	fprintf(stderr, "Version is: %u\n", version);
 	for (i = 0; version_compat[i].compat; i++)
 		if (version_compat[i].version == version)
 			break;

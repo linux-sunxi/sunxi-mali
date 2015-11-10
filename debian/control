@@ -1,0 +1,15 @@
+Source: sunxi-mali
+Section: unknown
+Priority: optional
+Maintainer: Mikhail Avdienko <whitearchey@gmail.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://linux-sunxi.org/
+
+Package: sunxi-mali
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Mali GPU binary driver and GLES libs
+ Mali GPU binary driver from Sunxi Linux.
+ Includes EGL, GLES1 and GLES2 libaries and headers.
+ Supports driver versions r2p4, r3p0, r3p1, r3p2-01rel1 and r4p0-00rel0 versions
