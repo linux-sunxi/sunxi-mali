@@ -1,0 +1,5 @@
+sunxi-mali (4.0.0.0) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Mikhail Avdienko <whitearchey@gmail.com>  Tue, 10 Nov 2015 12:05:35 +0800

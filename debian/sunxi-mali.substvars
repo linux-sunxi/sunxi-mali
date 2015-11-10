@@ -1,0 +1,2 @@
+shlibs:Depends=libc6 (>= 2.4), libdrm2 (>= 2.3.1), libx11-6 (>= 2:1.4.99.1), libxext6, libxfixes3
+misc:Depends=
