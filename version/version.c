@@ -89,7 +89,7 @@ main(int argc, char *argv[])
 	if (version_compat[i].compat)
 		printf("%s", version_compat[i].compat);
 	else
-		printf("UNKNOWN");
+		printf("UNKNOWN version code %d\n", version);
 
 	return 0;
 }
