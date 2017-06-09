@@ -18,20 +18,20 @@ typedef void             GLvoid;
 typedef unsigned int     GLenum;
 typedef unsigned char    GLboolean;
 typedef unsigned int     GLbitfield;
-typedef signed char		   GLbyte;
+typedef khronos_int8_t   GLbyte;
 typedef short            GLshort;
 typedef int              GLint;
 typedef int              GLsizei;
-typedef unsigned char			GLubyte;
+typedef khronos_uint8_t  GLubyte;
 typedef unsigned short   GLushort;
 typedef unsigned int     GLuint;
-typedef float  GLfloat;
-typedef float  GLclampf;
-typedef signed int  GLfixed;
+typedef khronos_float_t  GLfloat;
+typedef khronos_float_t  GLclampf;
+typedef khronos_int32_t  GLfixed;
 typedef signed int  GLclampx;
 
-typedef int * GLintptr;
-typedef int *  GLsizeiptr;
+typedef khronos_intptr_t GLintptr;
+typedef khronos_ssize_t  GLsizeiptr;
 
 
 /*************************************************************/
